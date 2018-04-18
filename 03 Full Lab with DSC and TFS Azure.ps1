@@ -1,6 +1,6 @@
 #the lab name is not static here as it has to be globally unique 
 $labName = "psconf$((1..6 | ForEach-Object { [char[]](97..122) | Get-Random }) -join '')"
-$azureContext = 'YOUR Azure JSON context here - Use Save-AzureRmContext after having selected your subscription!'
+$azureContext = "C:\LabSources\subContext.json"
 $azureLocation = 'West Europe' # Please use West Europe for the conference
 
 #region Lab setup
@@ -24,7 +24,7 @@ Add-LabDomainDefinition -Name contoso.com -AdminUser Install -AdminPassword Some
 Set-LabInstallationCredential -Username Install -Password Somepass1
 
 # Add the reference to our necessary ISO files
-Add-LabIsoImageDefinition -Name Tfs2018 -Path $labsources\ISOs\tfsserver2018.2_rc1.iso
+Add-LabIsoImageDefinition -Name Tfs2018 -Path $labsources\ISOs\mu_team_foundation_server_2018_update_2_rc2_x64_dvd_12061262.iso
 
 #defining default parameter values, as these ones are the same for all the machines
 $PSDefaultParameterValues = @{
@@ -33,7 +33,7 @@ $PSDefaultParameterValues = @{
     'Add-LabMachineDefinition:DomainName'      = 'contoso.com'
     'Add-LabMachineDefinition:DnsServer1'      = '192.168.111.10'
     'Add-LabMachineDefinition:OperatingSystem' = 'Windows Server 2016 Datacenter (Desktop Experience)'
-    'Add-LabMachineDefinition:AzureProperties' =  @{RoleSize = 'Standard_A2_V2'}
+    'Add-LabMachineDefinition:AzureProperties' =  @{RoleSize = 'Standard_DS1_v2'}
 }
 
 #The PostInstallationActivity is just creating some users
@@ -64,14 +64,14 @@ Add-LabMachineDefinition -Name DSCTFS01 -Memory 1GB -Roles Tfs2018
 # DSC target nodes - our legacy VMs with an existing configuration
 
 # Your run-of-the-mill file server in Dev
-Add-LabMachineDefinition -Name "DSCFile01" -Memory 1GB -OperatingSystem 'Windows Server 2016 Datacenter Evaluation' -Roles FileServer
+Add-LabMachineDefinition -Name "DSCFile01" -Memory 1GB -Roles FileServer
 # and Prod
-Add-LabMachineDefinition -Name "DSCFile02" -Memory 1GB -OperatingSystem 'Windows Server 2016 Datacenter Evaluation' -Roles FileServer
+Add-LabMachineDefinition -Name "DSCFile02" -Memory 1GB -Roles FileServer
 
 # The ubiquitous web server in Dev
-Add-LabMachineDefinition -Name "DSCWeb01" -Memory 1GB -OperatingSystem 'Windows Server 2016 Datacenter Evaluation' -Roles WebServer
+Add-LabMachineDefinition -Name "DSCWeb01" -Memory 1GB -Roles WebServer
 # and Prod
-Add-LabMachineDefinition -Name "DSCWeb02" -Memory 1GB -OperatingSystem 'Windows Server 2016 Datacenter Evaluation' -Roles WebServer
+Add-LabMachineDefinition -Name "DSCWeb02" -Memory 1GB -Roles WebServer
 
 
 Install-Lab
